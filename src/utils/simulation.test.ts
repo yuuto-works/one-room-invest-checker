@@ -170,6 +170,67 @@ describe('runSimulation', () => {
     });
   });
 
+  describe('totalProfitIfSold の正確性', () => {
+    it('既知の数値で totalProfitIfSold が正しく計算される', () => {
+      // シンプルなケース（金利0%・コストゼロ・価格下落なし・売却費用なし）で手計算と照合
+      // 購入2000万, 頭金200万, 借入1800万, 返済10年, 月家賃5万, 保有1年
+      // Year1: annualCF = 60万 - 0 - 180万 = -120万
+      // saleNetAfterLoan = 2000万 - 0 - (1800万 - 180万) = 2000万 - 1620万 = 380万
+      // 正しいtotalProfit = -120万 + 380万 - 200万 = +60万円
+      const input: SimulationInput = {
+        purchasePriceManYen: 2000,
+        downPaymentManYen: 200,
+        annualInterestRate: 0,
+        loanYears: 10,
+        initialMonthlyRent: 50000,
+        annualRentDeclineRate: 0,
+        vacancyRate: 0,
+        managementFeeMonthly: 0,
+        repairReserveMonthly: 0,
+        annualCostGrowthRate: 0,
+        annualFixedTax: 0,
+        annualOtherCost: 0,
+        majorRepairYear: 99,
+        majorRepairCost: 0,
+        annualPriceDeclineRate: 0,
+        sellingCostRate: 0,
+        holdYears: 1,
+      };
+      const result = runSimulation(input);
+      // 期待値: +60万円 = 600,000円
+      expect(result.rows[0].totalProfitIfSold).toBeCloseTo(600000, 0);
+    });
+
+    it('全額現金購入(頭金=購入価格)のとき、ローン返済なしで損益が正しく計算される', () => {
+      // 現金購入: 頭金 = 購入価格, ローンなし
+      // 購入1000万, 月家賃4万, 1年後売却
+      // Year1: annualCF = 48万, saleNetAfterLoan = 1000万(価格下落なし・売却費用なし)
+      // 正しいtotalProfit = 48万 + 1000万 - 1000万 = +48万円
+      const input: SimulationInput = {
+        purchasePriceManYen: 1000,
+        downPaymentManYen: 1000,
+        annualInterestRate: 0,
+        loanYears: 10,
+        initialMonthlyRent: 40000,
+        annualRentDeclineRate: 0,
+        vacancyRate: 0,
+        managementFeeMonthly: 0,
+        repairReserveMonthly: 0,
+        annualCostGrowthRate: 0,
+        annualFixedTax: 0,
+        annualOtherCost: 0,
+        majorRepairYear: 99,
+        majorRepairCost: 0,
+        annualPriceDeclineRate: 0,
+        sellingCostRate: 0,
+        holdYears: 1,
+      };
+      const result = runSimulation(input);
+      // 期待値: 480,000円
+      expect(result.rows[0].totalProfitIfSold).toBeCloseTo(480000, 0);
+    });
+  });
+
   describe('summary', () => {
     it('salePriceAtExitはholdYears年目の資産価値と一致する', () => {
       const result = runSimulation(BASE);

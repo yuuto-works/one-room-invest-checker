@@ -64,7 +64,7 @@ export function runSimulation(input: SimulationInput): SimulationResult {
     const grossSale = assetValue;
     const sellingCosts = grossSale * (input.sellingCostRate / 100);
     const saleNetAfterLoan = grossSale - sellingCosts - remainingLoan;
-    const totalProfitIfSold = cumulativeCashFlow + saleNetAfterLoan + downPaymentYen - purchasePriceYen;
+    const totalProfitIfSold = cumulativeCashFlow + saleNetAfterLoan - downPaymentYen;
 
     rows.push({
       year,

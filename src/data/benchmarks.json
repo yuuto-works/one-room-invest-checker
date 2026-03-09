@@ -1,0 +1,42 @@
+{
+  "minato": {
+    "label": "東京都港区",
+    "averagePricePerSqm": 205,
+    "averageGrossYield": 3.6,
+    "source": "不動産情報ライブラリを参考にしたMVP用サンプル値",
+    "period": "2025年想定",
+    "updatedAt": "2026-03-09"
+  },
+  "shinjuku": {
+    "label": "東京都新宿区",
+    "averagePricePerSqm": 148,
+    "averageGrossYield": 4.1,
+    "source": "不動産情報ライブラリを参考にしたMVP用サンプル値",
+    "period": "2025年想定",
+    "updatedAt": "2026-03-09"
+  },
+  "tsurumi": {
+    "label": "横浜市鶴見区",
+    "averagePricePerSqm": 88,
+    "averageGrossYield": 4.8,
+    "source": "不動産情報ライブラリを参考にしたMVP用サンプル値",
+    "period": "2025年想定",
+    "updatedAt": "2026-03-09"
+  },
+  "nishi": {
+    "label": "横浜市西区",
+    "averagePricePerSqm": 122,
+    "averageGrossYield": 4.3,
+    "source": "不動産情報ライブラリを参考にしたMVP用サンプル値",
+    "period": "2025年想定",
+    "updatedAt": "2026-03-09"
+  },
+  "nakahara": {
+    "label": "川崎市中原区",
+    "averagePricePerSqm": 112,
+    "averageGrossYield": 4.2,
+    "source": "不動産情報ライブラリを参考にしたMVP用サンプル値",
+    "period": "2025年想定",
+    "updatedAt": "2026-03-09"
+  }
+}

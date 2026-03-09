@@ -5,17 +5,31 @@
  * - 収束しない／解なしの場合は null を返す
  * - cashFlows[0] が Year 0 の初期投資（通常マイナス）
  * - cashFlows[t] が t 年目のキャッシュフロー（t ≥ 1）
+ * - キャッシュフローの符号反転が2回以上の場合、IRRが複数存在しうるため
+ *   multipleIrrWarning: true を付与する
  */
+
+export type IrrResult = {
+  value: number;
+  multipleIrrWarning: boolean;
+};
+
 function npv(rate: number, cashFlows: number[]): number {
   return cashFlows.reduce((sum, cf, t) => sum + cf / Math.pow(1 + rate, t), 0);
 }
 
-export function calculateIRR(cashFlows: number[]): number | null {
+export function calculateIRR(cashFlows: number[]): IrrResult | null {
   if (cashFlows.length < 2) return null;
 
   const hasNegative = cashFlows.some((cf) => cf < 0);
   const hasPositive = cashFlows.some((cf) => cf > 0);
   if (!hasNegative || !hasPositive) return null;
+
+  // 符号反転回数を数える（2回以上で複数解の可能性）
+  const signChanges = cashFlows.slice(1).reduce((count, cf, i) => {
+    return cashFlows[i] * cf < 0 ? count + 1 : count;
+  }, 0);
+  const multipleIrrWarning = signChanges > 1;
 
   // 探索範囲: -99% 〜 +1000%（現実的な不動産投資をカバー）
   const lo = -0.99;
@@ -35,7 +49,7 @@ export function calculateIRR(cashFlows: number[]): number | null {
     const npvMid = npv(mid, cashFlows);
 
     if ((upper - lower) / 2 < 1e-10) {
-      return mid;
+      return { value: mid, multipleIrrWarning };
     }
 
     if (npv(lower, cashFlows) * npvMid < 0) {
@@ -45,5 +59,5 @@ export function calculateIRR(cashFlows: number[]): number | null {
     }
   }
 
-  return (lower + upper) / 2;
+  return { value: (lower + upper) / 2, multipleIrrWarning };
 }

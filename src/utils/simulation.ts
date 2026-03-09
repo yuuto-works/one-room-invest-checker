@@ -44,7 +44,7 @@ export function runSimulation(input: SimulationInput): SimulationResult {
   let cumulativeCashFlow = 0;
 
   for (let year = 1; year <= input.holdYears; year += 1) {
-    const adjustedMonthlyRent = input.initialMonthlyRent * Math.pow(1 - input.annualRentDeclineRate / 100, year - 1);
+    const adjustedMonthlyRent = input.initialMonthlyRent * Math.pow(1 - input.annualRentDeclineRate / 100, year);
     const annualIncome = adjustedMonthlyRent * 12 * (1 - input.vacancyRate / 100);
 
     const adjustedManagement = input.managementFeeMonthly * 12 * Math.pow(1 + input.annualCostGrowthRate / 100, year - 1);
@@ -63,7 +63,10 @@ export function runSimulation(input: SimulationInput): SimulationResult {
     const assetValue = purchasePriceYen * Math.pow(1 - input.annualPriceDeclineRate / 100, year);
     const grossSale = assetValue;
     const sellingCosts = grossSale * (input.sellingCostRate / 100);
-    const saleNetAfterLoan = grossSale - sellingCosts - remainingLoan;
+    const taxableGain = Math.max(0, grossSale - sellingCosts - purchasePriceYen);
+    const taxRate = year <= 5 ? 0.3963 : 0.20315;
+    const transferTax = taxableGain * taxRate;
+    const saleNetAfterLoan = grossSale - sellingCosts - remainingLoan - transferTax;
     const totalProfitIfSold = cumulativeCashFlow + saleNetAfterLoan - downPaymentYen;
 
     rows.push({

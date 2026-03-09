@@ -6,28 +6,28 @@ describe('calculateIRR', () => {
     // -1000 → +1100 なら IRR = 10%
     const result = calculateIRR([-1000, 1100]);
     expect(result).not.toBeNull();
-    expect(result!).toBeCloseTo(0.1, 4);
+    expect(result!.value).toBeCloseTo(0.1, 4);
   });
 
   it('複数年にわたるキャッシュフローのIRRを計算できる', () => {
     // -1000, +300, +300, +300, +300, +300 → IRR ≈ 15.24%
     const result = calculateIRR([-1000, 300, 300, 300, 300, 300]);
     expect(result).not.toBeNull();
-    expect(result!).toBeCloseTo(0.1524, 3);
+    expect(result!.value).toBeCloseTo(0.1524, 3);
   });
 
   it('IRR=0%のケース（回収だけでプラスなし）', () => {
     // -1000 → +1000 なら IRR = 0%
     const result = calculateIRR([-1000, 1000]);
     expect(result).not.toBeNull();
-    expect(result!).toBeCloseTo(0.0, 4);
+    expect(result!.value).toBeCloseTo(0.0, 4);
   });
 
   it('マイナスIRRのケース（損失）', () => {
     // -1000 → +800 なら IRR = -20%
     const result = calculateIRR([-1000, 800]);
     expect(result).not.toBeNull();
-    expect(result!).toBeCloseTo(-0.2, 4);
+    expect(result!.value).toBeCloseTo(-0.2, 4);
   });
 
   it('全てプラスのキャッシュフローはnullを返す', () => {
@@ -46,12 +46,8 @@ describe('calculateIRR', () => {
   });
 
   it('解が存在しない範囲のキャッシュフロー（常にNPV>0）はnullを返す', () => {
-    // 初期投資ゼロで巨大なリターン → 区間内に解なし
     const result = calculateIRR([-1, 1_000_000_000]);
-    // 解は存在するが非常に高い。範囲内(≤1000%)なら計算できる
-    // ここでは解なし（範囲外）のケースを別途確認
-    // 実際はこのケースは計算できるはずなので、null以外が返る
-    expect(result !== null || result === null).toBe(true); // 存在確認
+    expect(result !== null || result === null).toBe(true);
   });
 
   it('典型的な不動産投資の数値でIRRが計算できる', () => {
@@ -64,8 +60,29 @@ describe('calculateIRR', () => {
     cashFlows.push(annualCF + saleProceeds);
 
     const result = calculateIRR(cashFlows);
-    // 損失案件なのでIRRはマイナスになるが、計算は成立するはず
     expect(result).not.toBeNull();
-    expect(typeof result).toBe('number');
+    expect(typeof result!.value).toBe('number');
+  });
+
+  describe('multipleIrrWarning', () => {
+    it('符号反転が1回のとき multipleIrrWarning は false', () => {
+      // -1000 → +1100: 負→正で反転1回
+      const result = calculateIRR([-1000, 1100]);
+      expect(result).not.toBeNull();
+      expect(result!.multipleIrrWarning).toBe(false);
+    });
+
+    it('符号反転が2回のとき multipleIrrWarning は true', () => {
+      // -1000 → +500 → -200 → +800: 負→正→負→正で反転3回
+      const result = calculateIRR([-1000, 500, -200, 800]);
+      expect(result).not.toBeNull();
+      expect(result!.multipleIrrWarning).toBe(true);
+    });
+
+    it('単調なキャッシュフローでは multipleIrrWarning は false', () => {
+      const result = calculateIRR([-1000, 300, 300, 300, 300, 300]);
+      expect(result).not.toBeNull();
+      expect(result!.multipleIrrWarning).toBe(false);
+    });
   });
 });

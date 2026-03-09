@@ -251,9 +251,15 @@ describe('runSimulation', () => {
       expect(bestRow.totalProfitIfSold).toBeCloseTo(maxProfit, 0);
     });
 
-    it('irrがnullまたは数値を返す', () => {
+    it('irrがnullまたはIrrResult型を返す', () => {
       const result = runSimulation(BASE);
-      expect(result.summary.irr === null || typeof result.summary.irr === 'number').toBe(true);
+      const irr = result.summary.irr;
+      if (irr !== null) {
+        expect(typeof irr.value).toBe('number');
+        expect(typeof irr.multipleIrrWarning).toBe('boolean');
+      } else {
+        expect(irr).toBeNull();
+      }
     });
   });
 });

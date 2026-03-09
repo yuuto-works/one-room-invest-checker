@@ -1,7 +1,7 @@
 import MetricCard from '../../components/MetricCard';
 import Panel from '../../components/Panel';
 import { SimulationResult as SimulationResultType, SimulationYearRow } from '../../types';
-import { formatManYen, formatSignedManYen, formatYen } from '../../utils/format';
+import { formatManYen, formatPercent, formatSignedManYen, formatYen } from '../../utils/format';
 import SimulationCharts from './SimulationCharts';
 
 type Props = {
@@ -18,6 +18,33 @@ function signedTextClass(value: number): string {
   if (value > 0) return 'text-emerald-700';
   if (value < 0) return 'text-red-700';
   return 'text-slate-700';
+}
+
+function IrrBadge({ irr }: { irr: number | null }) {
+  if (irr === null) {
+    return (
+      <div className="flex items-center gap-3">
+        <div className="text-2xl font-bold text-slate-400">算出不可</div>
+        <div className="text-xs text-slate-400">キャッシュフロー構造上、IRRを計算できません</div>
+      </div>
+    );
+  }
+
+  const irrPercent = irr * 100;
+  const valueText = formatPercent(irrPercent);
+  const { colorClass, label } =
+    irrPercent >= 5
+      ? { colorClass: 'text-emerald-700', label: '投資効率は良好な水準です' }
+      : irrPercent >= 2
+        ? { colorClass: 'text-amber-700', label: '投資効率は標準的な水準です' }
+        : { colorClass: 'text-red-700', label: '投資効率はやや低い水準です' };
+
+  return (
+    <div className="flex items-baseline gap-3">
+      <div className={`text-2xl font-bold ${colorClass}`}>{valueText}</div>
+      <div className="text-xs text-slate-500">{label}</div>
+    </div>
+  );
 }
 
 function YearRowCard({ row }: { row: SimulationYearRow }) {
@@ -83,6 +110,16 @@ export default function SimulationResult({ result }: Props) {
               売却時の手残りと、それまでの累計キャッシュフローを合わせた簡易モデルです。
               最適売却年も下に出しているので、出口タイミングの目安にも使えます。
             </div>
+          </div>
+        </div>
+
+        <div className="mt-4 rounded-[18px] border border-line bg-white px-5 py-4 sm:px-6">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <div className="text-sm font-semibold text-slate-500">IRR（内部収益率）</div>
+            <IrrBadge irr={summary.irr} />
+          </div>
+          <div className="mt-1 text-xs text-slate-400">
+            頭金を初期投資とし、毎年のCFと売却時手残りを含めた割引率。年利換算で投資効率を示します。
           </div>
         </div>
       </Panel>

@@ -81,6 +81,7 @@ export type SimulationSummary = {
   totalProfitAtExit: number;
   bestSellYear: number;
   bestSellProfit: number;
+  irr: number | null;
 };
 
 export type SimulationResult = {

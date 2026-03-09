@@ -1,4 +1,5 @@
 import { SimulationInput, SimulationResult, SimulationYearRow } from '../types';
+import { calculateIRR } from './irr';
 
 function calculateMonthlyPayment(principalYen: number, annualRatePercent: number, years: number): number {
   const monthlyRate = annualRatePercent / 100 / 12;
@@ -84,6 +85,20 @@ export function runSimulation(input: SimulationInput): SimulationResult {
     current.totalProfitIfSold > best.totalProfitIfSold ? current : best,
   rows[0]);
 
+  // IRR キャッシュフロー構築
+  // Year 0: 頭金の支出（ローンは各年のCFに含まれるため、初期投資は頭金のみ）
+  // Year 1..N: 各年の年間CF
+  // Year N（最終年）: 年間CF + 売却後手残り（売却価格 - 売却費用 - 残債）
+  const irrCashFlows: number[] = [-downPaymentYen];
+  rows.forEach((row, i) => {
+    if (i === rows.length - 1) {
+      irrCashFlows.push(row.annualCashFlow + row.saleNetAfterLoan);
+    } else {
+      irrCashFlows.push(row.annualCashFlow);
+    }
+  });
+  const irr = calculateIRR(irrCashFlows);
+
   return {
     rows,
     summary: {
@@ -94,6 +109,7 @@ export function runSimulation(input: SimulationInput): SimulationResult {
       totalProfitAtExit: exitRow.totalProfitIfSold,
       bestSellYear: bestRow.year,
       bestSellProfit: bestRow.totalProfitIfSold,
+      irr,
     },
   };
 }

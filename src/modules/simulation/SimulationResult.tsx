@@ -20,6 +20,89 @@ function signedTextClass(value: number): string {
   return 'text-slate-700';
 }
 
+type RiskLevel = {
+  stars: number;
+  label: string;
+  comment: string;
+  filledClass: string;
+  labelClass: string;
+  bgClass: string;
+};
+
+function getRiskLevel(irr: number | null): RiskLevel | null {
+  if (irr === null) return null;
+  const pct = irr * 100;
+  if (pct >= 5) return {
+    stars: 1,
+    label: '安全',
+    comment: '前提条件が現実的な範囲であれば、投資効率は良好といえます。',
+    filledClass: 'text-emerald-500',
+    labelClass: 'text-emerald-700',
+    bgClass: 'bg-emerald-50 border-emerald-200',
+  };
+  if (pct >= 3) return {
+    stars: 2,
+    label: '普通',
+    comment: '可もなく不可もない水準です。前提の妥当性をあらためて確認してみましょう。',
+    filledClass: 'text-sky-500',
+    labelClass: 'text-sky-700',
+    bgClass: 'bg-sky-50 border-sky-200',
+  };
+  if (pct >= 1) return {
+    stars: 3,
+    label: '注意',
+    comment: '投資効率は低めです。空室率・費用・金利の前提を厳しめで見直してみてください。',
+    filledClass: 'text-amber-500',
+    labelClass: 'text-amber-700',
+    bgClass: 'bg-amber-50 border-amber-200',
+  };
+  if (pct >= 0) return {
+    stars: 4,
+    label: '危険',
+    comment: 'キャッシュフローの改善余地が乏しい状況です。物件価格・条件の再確認を推奨します。',
+    filledClass: 'text-orange-500',
+    labelClass: 'text-orange-700',
+    bgClass: 'bg-orange-50 border-orange-200',
+  };
+  return {
+    stars: 5,
+    label: '非常に危険',
+    comment: '営業資料の前提がかなり楽観的である可能性があります。',
+    filledClass: 'text-red-500',
+    labelClass: 'text-red-700',
+    bgClass: 'bg-red-50 border-red-200',
+  };
+}
+
+function RiskIndicator({ irr }: { irr: number | null }) {
+  const risk = getRiskLevel(irr);
+
+  if (risk === null) {
+    return (
+      <div className="rounded-[18px] border border-line bg-white px-5 py-4 sm:px-6">
+        <div className="text-sm font-semibold text-slate-500">危険度</div>
+        <div className="mt-2 text-sm text-slate-400">IRRが算出不可のため、危険度を判定できません。</div>
+      </div>
+    );
+  }
+
+  const filled = '★'.repeat(risk.stars);
+  const empty = '☆'.repeat(5 - risk.stars);
+
+  return (
+    <div className={`rounded-[18px] border px-5 py-4 sm:px-6 ${risk.bgClass}`}>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div className="text-sm font-semibold text-slate-500">危険度</div>
+        <span className={`text-2xl tracking-widest ${risk.filledClass}`} aria-hidden="true">
+          {filled}<span className="text-slate-300">{empty}</span>
+        </span>
+        <span className={`text-sm font-bold ${risk.labelClass}`}>{risk.label}</span>
+      </div>
+      <div className="mt-2 text-sm text-slate-600">{risk.comment}</div>
+    </div>
+  );
+}
+
 function IrrBadge({ irr }: { irr: number | null }) {
   if (irr === null) {
     return (
@@ -121,6 +204,10 @@ export default function SimulationResult({ result }: Props) {
           <div className="mt-1 text-xs text-slate-400">
             頭金を初期投資とし、毎年のCFと売却時手残りを含めた割引率。年利換算で投資効率を示します。
           </div>
+        </div>
+
+        <div className="mt-3">
+          <RiskIndicator irr={summary.irr} />
         </div>
       </Panel>
 

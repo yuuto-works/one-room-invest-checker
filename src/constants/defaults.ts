@@ -21,7 +21,7 @@ export const DEFAULT_SIMULATION_INPUT: SimulationInput = {
   buildingAgeAtPurchase: 15,
   loanYears: 35,
   initialMonthlyRent: 78000,
-  annualRentDeclineRate: 1.0,
+  annualRentChangeRate: 1.0,
   vacancyRate: 8.0,
   managementFeeMonthly: 9000,
   repairReserveMonthly: 5000,
@@ -30,7 +30,7 @@ export const DEFAULT_SIMULATION_INPUT: SimulationInput = {
   annualOtherCost: 30000,
   majorRepairYear: 15,
   majorRepairCost: 300000,
-  annualPriceDeclineRate: 1.0,
+  annualPriceChangeRate: 1.0,
   sellingCostRate: 4.0,
   holdYears: 35,
 };

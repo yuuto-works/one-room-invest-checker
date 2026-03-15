@@ -53,7 +53,7 @@ export type SimulationInput = {
   buildingAgeAtPurchase: number;
   loanYears: number;
   initialMonthlyRent: number;
-  annualRentDeclineRate: number;
+  annualRentChangeRate: number;
   vacancyRate: number;
   managementFeeMonthly: number;
   repairReserveMonthly: number;
@@ -62,7 +62,7 @@ export type SimulationInput = {
   annualOtherCost: number;
   majorRepairYear: number;
   majorRepairCost: number;
-  annualPriceDeclineRate: number;
+  annualPriceChangeRate: number;
   sellingCostRate: number;
   holdYears: number;
 };
@@ -107,11 +107,11 @@ export type ScenarioPreset = {
   key: ScenarioKey;
   label: string;
   description: string;
-  annualRentDeclineRate: number;
+  annualRentChangeRate: number;
   vacancyRate: number;
   annualInterestRate: number;
   annualCostGrowthRate: number;
-  annualPriceDeclineRate: number;
+  annualPriceChangeRate: number;
   repairReserveMonthly?: number;
   majorRepairCost?: number;
 };

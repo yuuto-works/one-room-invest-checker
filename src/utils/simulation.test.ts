@@ -86,7 +86,7 @@ describe('runSimulation', () => {
     it('家賃下落率0%のとき初年度と最終年度の年間収入が同額', () => {
       const input: SimulationInput = {
         ...BASE,
-        annualRentDeclineRate: 0,
+        annualRentChangeRate: 0,
         vacancyRate: 0,
       };
       const result = runSimulation(input);
@@ -96,7 +96,7 @@ describe('runSimulation', () => {
     it('家賃下落率が正のとき年間収入は年々減少する', () => {
       const input: SimulationInput = {
         ...BASE,
-        annualRentDeclineRate: 2.0,
+        annualRentChangeRate: 2.0,
         vacancyRate: 0,
       };
       const result = runSimulation(input);
@@ -121,7 +121,7 @@ describe('runSimulation', () => {
     it('価格下落率0%のとき資産価値は購入価格のまま', () => {
       const input: SimulationInput = {
         ...BASE,
-        annualPriceDeclineRate: 0,
+        annualPriceChangeRate: 0,
       };
       const purchasePriceYen = input.purchasePriceManYen * 10000;
       const result = runSimulation(input);
@@ -133,7 +133,7 @@ describe('runSimulation', () => {
     it('価格下落率が正のとき資産価値は年々減少する', () => {
       const input: SimulationInput = {
         ...BASE,
-        annualPriceDeclineRate: 1.5,
+        annualPriceChangeRate: 1.5,
       };
       const result = runSimulation(input);
       for (let i = 1; i < result.rows.length; i++) {
@@ -187,7 +187,7 @@ describe('runSimulation', () => {
         buildingAgeAtPurchase: 15,
         loanYears: 10,
         initialMonthlyRent: 50000,
-        annualRentDeclineRate: 0,
+        annualRentChangeRate: 0,
         vacancyRate: 0,
         managementFeeMonthly: 0,
         repairReserveMonthly: 0,
@@ -196,7 +196,7 @@ describe('runSimulation', () => {
         annualOtherCost: 0,
         majorRepairYear: 99,
         majorRepairCost: 0,
-        annualPriceDeclineRate: 0,
+        annualPriceChangeRate: 0,
         sellingCostRate: 0,
         holdYears: 1,
       };
@@ -220,7 +220,7 @@ describe('runSimulation', () => {
         buildingAgeAtPurchase: 15,
         loanYears: 10,
         initialMonthlyRent: 40000,
-        annualRentDeclineRate: 0,
+        annualRentChangeRate: 0,
         vacancyRate: 0,
         managementFeeMonthly: 0,
         repairReserveMonthly: 0,
@@ -229,7 +229,7 @@ describe('runSimulation', () => {
         annualOtherCost: 0,
         majorRepairYear: 99,
         majorRepairCost: 0,
-        annualPriceDeclineRate: 0,
+        annualPriceChangeRate: 0,
         sellingCostRate: 0,
         holdYears: 1,
       };

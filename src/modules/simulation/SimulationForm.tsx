@@ -124,10 +124,10 @@ export default function SimulationForm({ value, onChange }: Props) {
             onChange={(v) => update('initialMonthlyRent', v)} suffix="円"
           />
           <NumericField
-            label="家賃下落率" value={value.annualRentDeclineRate}
-            onChange={(v) => update('annualRentDeclineRate', v)} suffix="%" step={0.1}
-            slider sliderMin={0} sliderMax={5} sliderStep={0.1}
-            hint="築年経過で年0.5〜2%が目安"
+            label="家賃変動率（−で上昇・＋で下落）" value={value.annualRentChangeRate}
+            onChange={(v) => update('annualRentChangeRate', v)} suffix="%" step={0.1}
+            slider sliderMin={-3} sliderMax={5} sliderStep={0.1}
+            hint="一般的に築年経過で年0.5〜2%下落。マイナス値は上昇を意味し、東京・大阪都心の駅徒歩5分以内・築浅の超好立地に限り微増の可能性あり（全国大多数の物件は当てはまりません）"
           />
           <NumericField
             label="空室率" value={value.vacancyRate}
@@ -206,10 +206,10 @@ export default function SimulationForm({ value, onChange }: Props) {
 
           <SectionLabel>売却・出口</SectionLabel>
           <NumericField
-            label="資産価値下落率" value={value.annualPriceDeclineRate}
-            onChange={(v) => update('annualPriceDeclineRate', v)} suffix="%" step={0.1}
-            slider sliderMin={0} sliderMax={5} sliderStep={0.1}
-            hint="都心0.5〜1%、郊外1〜3%が目安"
+            label="資産価値変動率（−で上昇・＋で下落）" value={value.annualPriceChangeRate}
+            onChange={(v) => update('annualPriceChangeRate', v)} suffix="%" step={0.1}
+            slider sliderMin={-3} sliderMax={5} sliderStep={0.1}
+            hint="一般的に都心0.5〜1%・郊外1〜3%下落。マイナス値は上昇を意味し、東京・大阪都心の主要駅近・築浅物件に限り微増の可能性あり（全国大多数の物件は当てはまりません）"
           />
           <NumericField
             label="売却コスト率" value={value.sellingCostRate}

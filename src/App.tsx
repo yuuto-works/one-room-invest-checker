@@ -22,11 +22,11 @@ function applyScenarioPreset(current: SimulationInput, key: ScenarioKey): Simula
   const preset = SCENARIOS.find((item) => item.key === key)!;
   return {
     ...current,
-    annualRentDeclineRate: preset.annualRentDeclineRate,
+    annualRentChangeRate: preset.annualRentChangeRate,
     vacancyRate: preset.vacancyRate,
     annualInterestRate: preset.annualInterestRate,
     annualCostGrowthRate: preset.annualCostGrowthRate,
-    annualPriceDeclineRate: preset.annualPriceDeclineRate,
+    annualPriceChangeRate: preset.annualPriceChangeRate,
     ...(preset.repairReserveMonthly !== undefined && { repairReserveMonthly: preset.repairReserveMonthly }),
     ...(preset.majorRepairCost !== undefined && { majorRepairCost: preset.majorRepairCost }),
   };
